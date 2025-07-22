@@ -110,12 +110,14 @@ function! s:LoadTranslations(rails_root, locale, key)
     let final_result = a:locale . ': ' . entry[0] . " -> " . filename
     return final_result
   else
-    echom a:locale . ': CONFLICT'
+    let filenames = []
     for entry in results
       let filename = '/' . fnamemodify(entry[1], ':t')
-      let filename = '  ' . filename
-      return final_result
+      let filenames = add(filenames, filename)
     endfor
+
+    let final_result = a:locale . ': CONFLICT ' . ' -> ' . join(filenames, ",")
+    return final_result
   endif
 endfunction
 
