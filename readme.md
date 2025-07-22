@@ -48,8 +48,7 @@ With this mapping, simply press `<leader>i` while your cursor is over a translat
 ## Output
 It will open a popup with the results.
 
-https://github.com/user-attachments/assets/61c4c1a8-c231-43ee-a82c-6389bb68579d
-
+![untitled (1)](https://github.com/user-attachments/assets/e4359140-0066-4289-b4f2-83aed3863c6a)
 
 
 ## AI 
