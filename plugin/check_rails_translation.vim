@@ -4,10 +4,9 @@
 " Maintainer:   Mislav Kvesic <https://github.com/Mislavoo7>
 
 if exists("g:loaded_check_rails_translation")
-    finish
+  finish
 endif
 let g:loaded_check_rails_translation = 1
 
 " Exposes the plugin's functions for use as commands in Vim.
-command! -nargs=0 DisplayTime call check-rails-translation#SayHello()
-    
+command! -nargs=0 CheckTranslationPattern call check_rails_translation#run_check_translation_pattern()
