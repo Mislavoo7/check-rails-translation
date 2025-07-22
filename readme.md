@@ -52,7 +52,7 @@ It will open a popup with the results.
 
 
 ## AI 
-Uses [tgpt](https://github.com/aandrew-me/tgpt) to suggest translations for missing keys. To turn off tgpt-powered translation suggestions:
+Uses [tgpt](https://github.com/aandrew-me/tgpt) to suggest translations for missing keys. To turn off tgpt-powered translation suggestions add this to your .vimrc:
 ```
 let g:rails_translation_checker_use_tgpt = 0
 ```
