@@ -247,7 +247,7 @@ function! s:TryToMakeSuggestions(results) abort
   endfor
 
   " Step 3: Use `tgpt` for translation suggestions
-  if default_text != '' && executable('tgpt')
+  if default_text != '' && executable('tgpt') && g:rails_translation_checker_use_tgpt == 1
     for locale in missing_locales
       let command = 'Translate the phrase: \"' . default_text . '\" to locale \"' . locale . '\" no explaining, no intro, no original phrase just the raw output, just the result, no locale, dont tell me what you are doing and add a pipe | before the phrase'
 
