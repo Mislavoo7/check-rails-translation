@@ -41,7 +41,7 @@ function! check_rails_translation#run_check_translation_pattern() abort
     let start_col = match_end
   endwhile
 
-  call s:ShowStyledTranslationPopup(results)
+  let suggestions = s:TryToMakeSuggestions(results)
 endfunction
 
 function! s:GetAvailableLocales(rails_root)
@@ -192,10 +192,12 @@ function! s:FindYamlKey(filename, class_key, locale)
 
   return 0 
 endfunction
+
+
 function! s:ShowStyledTranslationPopup(lines) abort
   " Add close button to the lines
   let display_lines = ['[x] Close'] + a:lines
-  
+
   return popup_create(display_lines, {
         \ 'line': 'cursor+1',
         \ 'col': 'cursor',
@@ -221,3 +223,43 @@ function! s:PopupCallback(id, result) abort
     call popup_close(a:id)
   endif
 endfunction
+
+function! s:TryToMakeSuggestions(results) abort
+  let default_text = ''
+  let missing_locales = []
+  let suggestions = []
+
+  " Step 1: Find the first valid translation
+  for result in a:results
+    if result =~# 'TRANSLATION MISSING'
+      " Step 2: Extract locale code (e.g., 'hu')
+      let locale = matchstr(result, '^\zs\w\+\ze:')
+      call add(missing_locales, locale)
+    else
+      " Extract the translation text
+      let text = matchstr(result, ':\s\zs.\{-}\ze\s*->')
+      if default_text == ''
+        let default_text = text
+      endif
+    endif
+  endfor
+
+  " Step 3: Use `tgpt` for translation suggestions
+  if default_text != '' && executable('tgpt')
+    for locale in missing_locales
+      let command = 'Translate the phrase: \"' . default_text . '\" to locale \"' . locale . '\" no explaining, no intro, no original phrase just the raw output, just the result, no locale, dont tell me what you are doing and add a pipe | before the phrase'
+
+      " Call tgpt - assuming it's available in $PATH and async use isn't required
+      let output = system('tgpt "' . command . '"')
+
+      let clean_output = matchstr(output, '\v\|\s*\zs.*')
+      let clean_output_2 = 'Suggestion for ' . locale . ": " . substitute(clean_output, '[[:cntrl:][:punct:]]', '', 'g')
+      let suggestions = add(suggestions, clean_output_2)
+    endfor
+  endif
+
+  let results_with_suggestions = a:results + suggestions
+
+  call s:ShowStyledTranslationPopup(results_with_suggestions)
+endfunction
+
