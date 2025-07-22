@@ -1,5 +1,6 @@
 function! check_rails_translation#run_check_translation_pattern() abort
   let rails_root = s:FindRailsRoot()
+  let results = []
   if rails_root == ''
     echo 'Not in a Rails project'
     return
@@ -26,8 +27,8 @@ function! check_rails_translation#run_check_translation_pattern() abort
       let key = matchstr(line, pattern, start_col)
       if key != ''
         for locale in locales
-          let all_translation_files = s:LoadTranslations(rails_root, locale, key)
-          echom all_translation_files
+          let all_translations = s:LoadTranslations(rails_root, locale, key)
+          let results = add(results, all_translations)
         endfor
       else
         echo "Cursor not on a translation key"
@@ -40,7 +41,7 @@ function! check_rails_translation#run_check_translation_pattern() abort
     let start_col = match_end
   endwhile
 
-
+  call s:ShowStyledTranslationPopup(results)
 endfunction
 
 function! s:GetAvailableLocales(rails_root)
@@ -106,7 +107,7 @@ function! s:LoadTranslations(rails_root, locale, key)
   elseif count_results == 1
     let entry = results[0]
     let filename = '/' . fnamemodify(entry[1], ':t')
-    let final_result = a:locale . ': ' . entry[0] . " in: " . filename
+    let final_result = a:locale . ': ' . entry[0] . " -> " . filename
     return final_result
   else
     echom a:locale . ': CONFLICT'
@@ -190,4 +191,33 @@ function! s:FindYamlKey(filename, class_key, locale)
   endfor
 
   return 0 
+endfunction
+function! s:ShowStyledTranslationPopup(lines) abort
+  " Add close button to the lines
+  let display_lines = ['[x] Close'] + a:lines
+  
+  return popup_create(display_lines, {
+        \ 'line': 'cursor+1',
+        \ 'col': 'cursor',
+        \ 'pos': 'botleft',
+        \ 'padding': [0,1,0,1],
+        \ 'border': [],
+        \ 'minwidth': 30,
+        \ 'maxheight': 10,
+        \ 'wrap': v:false,
+        \ 'zindex': 10,
+        \ 'moved': 'word',
+        \ 'close': 'click',
+        \ 'filter': 'popup_filter_menu',
+        \ 'mapping': 0,
+        \ 'callback': 's:PopupCallback'
+        \ })
+endfunction
+
+function! s:PopupCallback(id, result) abort
+  " Handle the callback if needed
+  if a:result == 1
+    " User clicked on first line ([x] Close)
+    call popup_close(a:id)
+  endif
 endfunction
