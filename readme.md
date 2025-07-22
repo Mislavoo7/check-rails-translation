@@ -48,6 +48,10 @@ With this mapping, simply press `<leader>i` while your cursor is over a translat
 ## Output
 It will open a popup with the results.
 
+https://github.com/user-attachments/assets/61c4c1a8-c231-43ee-a82c-6389bb68579d
+
+
+
 ## AI 
 Uses [tgpt](https://github.com/aandrew-me/tgpt) to suggest translations for missing keys. To turn off tgpt-powered translation suggestions:
 ```
