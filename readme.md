@@ -59,3 +59,11 @@ let g:rails_translation_checker_use_tgpt = 0
 
 ## TODO
 - Find conflicts inside a file
+
+## License
+This project is licensed under the MIT License.
+
+## Acknowledgments
+- Built with ❤️ for the Rails community
+- Uses [tgpt](https://github.com/aandrew-me/tgpt) for the AI suggestions 
+- Inspired by the need to eliminate missing translation problems
